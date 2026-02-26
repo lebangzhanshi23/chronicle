@@ -1,25 +1,34 @@
-{{range $task := .Tasks}}
-# {{$task.Title}}
-
-**Category:** {{$task.Category}}
-**Status:** {{$task.Status}}
-**Created At:** {{$task.CreatedAt}}
-**Completed At:** {{$task.CompletedAt}}
-
-## Context / Description
-{{if $task.Description}}{{$task.Description}}{{else}}*No description provided.*{{end}}
-
-## Targets
-{{if $task.Targets}}{{$task.Targets}}{{else}}*No targets provided.*{{end}}
-
-## Work Logs
-
-{{range $date := $task.SortedDates}}
-### {{$date}}
-{{range $logs := index $task.LogsByDate $date}}
-- **{{.Time}}**: {{.Text}}{{if .Note}} (*{{.Note}}*){{end}}
-{{end}}
-{{end}}
-
 ---
+created: {{.CreatedAt}}
+updated: {{if .CompletedAt}}{{.CompletedAt}}{{else}}2026-02-26 10:00:00{{end}}
+status: {{if eq .Status "done"}}✅ 已完成{{else}}🏃‍♂️ 进行中{{end}}
+progress: {{if eq .Status "done"}}100%{{else}}0%{{end}}
+deadline: {{if .Deadline}}{{.Deadline}}{{else}}2026-02-26 20:30:00{{end}}
+---
+
+# {{.Title}}
+
+## 📋 任务描述
+
+{{if .Description}}{{.Description}}{{else}}*无任务描述*{{end}}
+
+## 🎯 目标
+
+{{if .Targets}}{{.Targets}}{{else}}*无目标*{{end}}
+
+## 🔍 工作记录
+
+{{range $date := .ReverseSortedDates}}
+### {{$date}}
+{{range $log := index $.LogsByDate $date}}
+- {{$log.Time}} {{$log.Text}}{{if $log.Note}} (*{{$log.Note}}*){{end}}
 {{end}}
+{{end}}
+
+## 🔗 相关链接
+
+- 需求单据：
+- 相关代码：
+- 参考文档：
+
+## 📝 备注

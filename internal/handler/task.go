@@ -130,11 +130,12 @@ func GetDailySummary(c *gin.Context) {
 
 func GetDailyMarkdown(c *gin.Context) {
 	dateStr := c.Query("date") // Format: YYYY-MM-DD
-	markdownBytes, err := exporter.GenerateDailyMarkdown(dateStr)
+	zipBytes, err := exporter.GenerateDailyMarkdown(dateStr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResp(500, "failed to generate markdown: "+err.Error()))
 		return
 	}
 
-	c.Data(http.StatusOK, "text/markdown; charset=utf-8", markdownBytes)
+	c.Header("Content-Disposition", "attachment; filename=obsidian_tasks.zip")
+	c.Data(http.StatusOK, "application/zip", zipBytes)
 }

@@ -1,8 +1,11 @@
 package exporter
 
 import (
+	"archive/zip"
 	"bytes"
+	"fmt"
 	"sort"
+	"strings"
 	"text/template"
 	"time"
 
@@ -17,19 +20,16 @@ type LogView struct {
 }
 
 type TaskView struct {
-	Title       string
-	Category    string
-	Status      string
-	Description string
-	Targets     string
-	CreatedAt   string
-	CompletedAt string
-	LogsByDate  map[string][]LogView
-	SortedDates []string // to keep the dates sorted if we needed to sort keys in Go 1.12+ (or generic range)
-}
-
-type ExportData struct {
-	Tasks []TaskView
+	Title              string
+	Category           string
+	Status             string
+	Description        string
+	Targets            string
+	CreatedAt          string
+	CompletedAt        string
+	Deadline           string
+	LogsByDate         map[string][]LogView
+	ReverseSortedDates []string
 }
 
 func GenerateDailyMarkdown(dateStr string) ([]byte, error) {
@@ -53,12 +53,18 @@ func GenerateDailyMarkdown(dateStr string) ([]byte, error) {
 		return nil, err
 	}
 
-	var data ExportData
+	tmpl, err := template.ParseFiles("templates/obsidian_task.tmpl")
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a zip buffer
+	var zipBuf bytes.Buffer
+	zipWriter := zip.NewWriter(&zipBuf)
 
 	for _, t := range tasks {
-		// get all logs for this task
 		var logs []model.TaskLog
-		if err := service.DB.Where("task_id = ?", t.ID).Order("created_at asc").Find(&logs).Error; err != nil {
+		if err := service.DB.Where("task_id = ?", t.ID).Order("created_at desc").Find(&logs).Error; err != nil {
 			return nil, err
 		}
 
@@ -77,6 +83,11 @@ func GenerateDailyMarkdown(dateStr string) ([]byte, error) {
 			completedAt = t.ActualCompletedAt.Format("2006-01-02 15:04:05")
 		}
 
+		deadlineAt := ""
+		if t.Deadline != nil {
+			deadlineAt = t.Deadline.Format("2006-01-02 15:04:05")
+		}
+
 		tv := TaskView{
 			Title:       t.Title,
 			Category:    t.Category,
@@ -85,29 +96,34 @@ func GenerateDailyMarkdown(dateStr string) ([]byte, error) {
 			Targets:     t.Targets,
 			CreatedAt:   t.CreatedAt.Format("2006-01-02 15:04:05"),
 			CompletedAt: completedAt,
+			Deadline:    deadlineAt,
 			LogsByDate:  logsByDate,
 		}
 
-		// Sort the dates
 		var dates []string
 		for k := range logsByDate {
 			dates = append(dates, k)
 		}
-		sort.Strings(dates)
-		tv.SortedDates = dates
+		sort.Sort(sort.Reverse(sort.StringSlice(dates)))
+		tv.ReverseSortedDates = dates
 
-		data.Tasks = append(data.Tasks, tv)
+		var taskBuf bytes.Buffer
+		if err := tmpl.Execute(&taskBuf, tv); err != nil {
+			continue
+		}
+
+		safeTitle := strings.ReplaceAll(t.Title, "/", "-")
+		safeTitle = strings.ReplaceAll(safeTitle, "\\", "-")
+		fWriter, err := zipWriter.Create(fmt.Sprintf("%s.md", safeTitle))
+		if err != nil {
+			continue
+		}
+		fWriter.Write(taskBuf.Bytes())
 	}
 
-	tmpl, err := template.ParseFiles("templates/obsidian_task.tmpl")
-	if err != nil {
+	if err := zipWriter.Close(); err != nil {
 		return nil, err
 	}
 
-	var buf bytes.Buffer
-	if err := tmpl.Execute(&buf, data); err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
+	return zipBuf.Bytes(), nil
 }

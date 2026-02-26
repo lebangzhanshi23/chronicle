@@ -85,6 +85,21 @@ function createTaskCard(task) {
 // Modals
 function openNewTaskModal() {
     document.getElementById('new-task-form').reset();
+
+    // Set default deadline to 7 days from now at 20:30
+    const dlInput = document.getElementById('task-deadline');
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    d.setHours(20, 30, 0, 0); // local time 20:30
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+
+    dlInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+
     document.getElementById('new-task-modal').classList.remove('hidden');
 }
 
@@ -116,6 +131,20 @@ function openTaskDetailModal(taskId) {
                     statusEl.className = 'text-[10px] uppercase tracking-wider font-semibold ml-2 text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20';
                 } else {
                     statusEl.className = 'text-[10px] uppercase tracking-wider font-semibold ml-2 text-slate-400 bg-slate-500/10 px-2 py-1 rounded border border-slate-500/20';
+                }
+
+                if (task.deadline) {
+                    document.getElementById('detail-task-deadline-container').classList.remove('hidden');
+                    document.getElementById('detail-task-deadline').textContent = new Date(task.deadline).toLocaleString();
+                } else {
+                    document.getElementById('detail-task-deadline-container').classList.add('hidden');
+                }
+
+                if (task.actual_completed_at) {
+                    document.getElementById('detail-task-completed-container').classList.remove('hidden');
+                    document.getElementById('detail-task-completed').textContent = new Date(task.actual_completed_at).toLocaleString();
+                } else {
+                    document.getElementById('detail-task-completed-container').classList.add('hidden');
                 }
 
                 if (task.description) {
@@ -181,6 +210,12 @@ function handleCreateTask(e) {
     const category = document.getElementById('task-category').value;
     const desc = document.getElementById('task-desc').value;
     const targets = document.getElementById('task-targets').value;
+    const deadlineInput = document.getElementById('task-deadline').value;
+
+    let deadline = null;
+    if (deadlineInput) {
+        deadline = new Date(deadlineInput).toISOString();
+    }
 
     fetch('/api/v1/tasks', {
         method: 'POST',
@@ -191,7 +226,8 @@ function handleCreateTask(e) {
             title: title,
             category: category,
             description: desc,
-            targets: targets
+            targets: targets,
+            deadline: deadline
         })
     })
         .then(res => res.json())

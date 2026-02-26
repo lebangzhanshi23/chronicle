@@ -225,6 +225,12 @@
                                 placeholder="e.g. Backend">
                         </div>
                         <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Deadline <span
+                                    class="text-slate-500 text-xs font-normal">(Optional)</span></label>
+                            <input type="datetime-local" id="task-deadline"
+                                class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500">
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-slate-300 mb-1">Description <span
                                     class="text-slate-500 text-xs font-normal">(Optional)</span></label>
                             <textarea id="task-desc" rows="3"
@@ -283,6 +289,28 @@
                                 class="text-[10px] uppercase tracking-wider font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20"
                                 id="detail-task-category"></span>
                             <span id="detail-task-status"></span>
+                        </div>
+                        <div class="flex flex-col gap-2 mt-1 mb-2">
+                            <div id="detail-task-deadline-container"
+                                class="hidden flex items-center gap-2 text-xs text-slate-400">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                <span>Deadline: <span id="detail-task-deadline"
+                                        class="text-slate-300 font-medium"></span></span>
+                            </div>
+                            <div id="detail-task-completed-container"
+                                class="hidden flex items-center gap-2 text-xs text-slate-400">
+                                <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Completed: <span id="detail-task-completed"
+                                        class="text-emerald-400 font-medium"></span></span>
+                            </div>
                         </div>
                         <div id="detail-task-desc-container" class="hidden">
                             <h4 class="text-sm font-medium text-slate-400 mb-2">Description</h4>
