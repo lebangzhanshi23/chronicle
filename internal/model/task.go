@@ -36,10 +36,11 @@ type TaskLog struct {
 // Request and Response DTOs
 
 type CreateTaskReq struct {
-	Title       string `json:"title" binding:"required"`
-	Category    string `json:"category" binding:"required"`
-	Description string `json:"description"`
-	Targets     string `json:"targets"`
+	Title       string     `json:"title" binding:"required"`
+	Category    string     `json:"category" binding:"required"`
+	Description string     `json:"description"`
+	Targets     string     `json:"targets"`
+	Deadline    *time.Time `json:"deadline"`
 }
 
 type UpdateProgressReq struct {

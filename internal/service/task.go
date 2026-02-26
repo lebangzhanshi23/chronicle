@@ -16,6 +16,7 @@ func CreateTask(req model.CreateTaskReq) (*model.Task, error) {
 		Category:    req.Category,
 		Description: req.Description,
 		Targets:     req.Targets,
+		Deadline:    req.Deadline,
 		Status:      model.TaskStatusTodo,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
