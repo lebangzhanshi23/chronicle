@@ -41,6 +41,7 @@ type CreateTaskReq struct {
 	Category    string     `json:"category" binding:"required"`
 	Description string     `json:"description"`
 	Targets     string     `json:"targets"`
+	Links       string     `json:"links"`
 	Deadline    *time.Time `json:"deadline"`
 }
 
@@ -70,6 +71,7 @@ type ActiveTaskResp struct {
 type DailySummaryActivity struct {
 	TaskID    string   `json:"task_id"`
 	TaskTitle string   `json:"task_title"`
+	Category  string   `json:"category"`
 	Status    string   `json:"status"`
 	TodayLogs []string `json:"today_logs"`
 }

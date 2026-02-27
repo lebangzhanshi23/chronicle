@@ -22,6 +22,7 @@ func CreateTask(req model.CreateTaskReq) (*model.Task, error) {
 		Category:    req.Category,
 		Description: req.Description,
 		Targets:     req.Targets,
+		Links:       req.Links,
 		Deadline:    localDeadline,
 		Status:      model.TaskStatusTodo,
 		CreatedAt:   time.Now(),
@@ -233,6 +234,7 @@ func GetDailySummary(dateStr string) (*model.DailySummaryResp, error) {
 			activities = append(activities, model.DailySummaryActivity{
 				TaskID:    t.ID,
 				TaskTitle: t.Title,
+				Category:  t.Category,
 				Status:    t.Status,
 				TodayLogs: taskLogMap[tid],
 			})
