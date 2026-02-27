@@ -104,6 +104,11 @@ func UpdateProgress(taskID string, req model.UpdateProgressReq) error {
 			"updated_at": time.Now(),
 		}
 
+		// Update deadline if provided
+		if req.Deadline != nil {
+			updates["deadline"] = *req.Deadline
+		}
+
 		newStatus := task.Status
 		if req.MarkAsDone || req.NewStatus == model.TaskStatusDone {
 			newStatus = model.TaskStatusDone

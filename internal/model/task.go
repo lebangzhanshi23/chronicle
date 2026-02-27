@@ -44,9 +44,10 @@ type CreateTaskReq struct {
 }
 
 type UpdateProgressReq struct {
-	LogText    string `json:"log_text" binding:"required"`
-	MarkAsDone bool   `json:"mark_as_done"`
-	NewStatus  string `json:"new_status"`
+	LogText    string     `json:"log_text" binding:"required"`
+	MarkAsDone bool       `json:"mark_as_done"`
+	NewStatus  string     `json:"new_status"`
+	Deadline   *time.Time `json:"deadline"`
 }
 
 type ActiveTaskResp struct {
