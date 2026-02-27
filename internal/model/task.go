@@ -71,6 +71,7 @@ type ActiveTaskResp struct {
 type DailySummaryActivity struct {
 	TaskID    string   `json:"task_id"`
 	TaskTitle string   `json:"task_title"`
+	Category  string   `json:"category"`
 	Status    string   `json:"status"`
 	TodayLogs []string `json:"today_logs"`
 }

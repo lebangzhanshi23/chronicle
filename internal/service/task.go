@@ -234,6 +234,7 @@ func GetDailySummary(dateStr string) (*model.DailySummaryResp, error) {
 			activities = append(activities, model.DailySummaryActivity{
 				TaskID:    t.ID,
 				TaskTitle: t.Title,
+				Category:  t.Category,
 				Status:    t.Status,
 				TodayLogs: taskLogMap[tid],
 			})
