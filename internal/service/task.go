@@ -110,6 +110,9 @@ func UpdateTask(id string, req model.UpdateTaskReq) (*model.Task, error) {
 	if req.Targets != "" {
 		updates["targets"] = req.Targets
 	}
+	if req.Links != "" {
+		updates["links"] = req.Links
+	}
 	if req.Deadline != nil {
 		updates["deadline"] = req.Deadline.Local()
 	}

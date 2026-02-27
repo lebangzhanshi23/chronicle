@@ -177,6 +177,20 @@ function openTaskDetailModal(taskId) {
                     document.getElementById('detail-task-targets-container').classList.add('hidden');
                 }
 
+                // Display links
+                const linksContainer = document.getElementById('detail-task-links-container');
+                const linksContent = document.getElementById('detail-task-links');
+                if (task.links) {
+                    linksContainer.classList.remove('hidden');
+                    const links = task.links.split('\n').filter(l => l.trim());
+                    linksContent.innerHTML = links.map(link => {
+                        const url = link.trim();
+                        return `<a href="${url}" target="_blank" class="text-indigo-400 hover:text-indigo-300 underline break-all">${url}</a>`;
+                    }).join('<br>');
+                } else {
+                    linksContainer.classList.add('hidden');
+                }
+
                 const logsContainer = document.getElementById('detail-task-logs');
                 logsContainer.innerHTML = '';
                 if (task.logs && task.logs.length > 0) {
@@ -280,6 +294,7 @@ function openEditTaskModal(task) {
     document.getElementById('edit-task-category').value = task.category;
     document.getElementById('edit-task-desc').value = task.description || '';
     document.getElementById('edit-task-targets').value = task.targets || '';
+    document.getElementById('edit-task-links').value = task.links || '';
 
     // Set deadline if it exists
     const dlInput = document.getElementById('edit-task-deadline');
@@ -307,6 +322,7 @@ function handleEditTask(e) {
     const category = document.getElementById('edit-task-category').value;
     const desc = document.getElementById('edit-task-desc').value;
     const targets = document.getElementById('edit-task-targets').value;
+    const links = document.getElementById('edit-task-links').value;
     const deadlineInput = document.getElementById('edit-task-deadline').value;
 
     let deadline = null;
@@ -324,6 +340,7 @@ function handleEditTask(e) {
             category: category,
             description: desc,
             targets: targets,
+            links: links,
             deadline: deadline
         })
     })

@@ -307,6 +307,13 @@
                                 class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 resize-none"
                                 placeholder="Acceptance criteria..."></textarea>
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Links <span
+                                    class="text-slate-500 text-xs font-normal">(Optional, one URL per line)</span></label>
+                            <textarea id="edit-task-links" rows="2"
+                                class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 resize-none"
+                                placeholder="https://..."></textarea>
+                        </div>
                         <div class="mt-6 flex justify-end gap-3">
                             <button type="button" onclick="closeModals()"
                                 class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">Cancel</button>
@@ -386,6 +393,11 @@
                             <h4 class="text-sm font-medium text-slate-400 mb-2">Targets</h4>
                             <div class="text-sm text-slate-300 bg-dark-bg p-4 rounded-xl border border-dark-border leading-relaxed whitespace-pre-wrap"
                                 id="detail-task-targets"></div>
+                        </div>
+                        <div id="detail-task-links-container" class="hidden">
+                            <h4 class="text-sm font-medium text-slate-400 mb-2">Links</h4>
+                            <div class="text-sm text-slate-300 bg-dark-bg p-4 rounded-xl border border-dark-border leading-relaxed"
+                                id="detail-task-links"></div>
                         </div>
                         <div>
                             <h4 class="text-sm font-medium text-slate-400 mb-3 flex items-center gap-2">

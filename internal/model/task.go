@@ -16,6 +16,7 @@ type Task struct {
 	Category          string     `gorm:"type:varchar(100);not null" json:"category"`
 	Description       string     `gorm:"type:text" json:"description,omitempty"`
 	Targets           string     `gorm:"type:text" json:"targets"`
+	Links             string     `gorm:"type:text" json:"links"`
 	Status            string     `gorm:"type:varchar(20);default:'todo';not null" json:"status"`
 	Deadline          *time.Time `json:"deadline,omitempty"`
 	ActualCompletedAt *time.Time `json:"actual_completed_at,omitempty"`
@@ -55,6 +56,7 @@ type UpdateTaskReq struct {
 	Category    string     `json:"category"`
 	Description string     `json:"description"`
 	Targets     string     `json:"targets"`
+	Links       string     `json:"links"`
 	Deadline    *time.Time `json:"deadline"`
 }
 
