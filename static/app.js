@@ -211,6 +211,13 @@ function openTaskDetailModal(taskId) {
                     btnUpdate.classList.add('hidden');
                 }
 
+                const btnEdit = document.getElementById('btn-edit-task');
+                btnEdit.classList.remove('hidden');
+                btnEdit.onclick = () => {
+                    closeModals();
+                    openEditTaskModal(task);
+                };
+
                 const btnDelete = document.getElementById('btn-delete-task');
                 btnDelete.classList.remove('hidden');
                 btnDelete.onclick = () => confirmDeleteTask(task.id);
@@ -224,6 +231,7 @@ function openTaskDetailModal(taskId) {
 
 function closeModals() {
     document.getElementById('new-task-modal').classList.add('hidden');
+    document.getElementById('edit-task-modal')?.classList.add('hidden');
     document.getElementById('progress-modal').classList.add('hidden');
     document.getElementById('task-detail-modal')?.classList.add('hidden');
 }
@@ -261,6 +269,73 @@ function handleCreateTask(e) {
                 closeModals();
                 loadTasks();
                 showToast('Task created successfully');
+            }
+        });
+}
+
+function openEditTaskModal(task) {
+    document.getElementById('edit-task-form').reset();
+    document.getElementById('edit-task-id').value = task.id;
+    document.getElementById('edit-task-title').value = task.title;
+    document.getElementById('edit-task-category').value = task.category;
+    document.getElementById('edit-task-desc').value = task.description || '';
+    document.getElementById('edit-task-targets').value = task.targets || '';
+
+    // Set deadline if it exists
+    const dlInput = document.getElementById('edit-task-deadline');
+    if (dlInput) {
+        if (task.deadline) {
+            const d = new Date(task.deadline);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            dlInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        } else {
+            dlInput.value = '';
+        }
+    }
+
+    document.getElementById('edit-task-modal').classList.remove('hidden');
+}
+
+function handleEditTask(e) {
+    e.preventDefault();
+    const taskId = document.getElementById('edit-task-id').value;
+    const title = document.getElementById('edit-task-title').value;
+    const category = document.getElementById('edit-task-category').value;
+    const desc = document.getElementById('edit-task-desc').value;
+    const targets = document.getElementById('edit-task-targets').value;
+    const deadlineInput = document.getElementById('edit-task-deadline').value;
+
+    let deadline = null;
+    if (deadlineInput) {
+        deadline = new Date(deadlineInput).toISOString();
+    }
+
+    fetch(`/api/v1/tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: title,
+            category: category,
+            description: desc,
+            targets: targets,
+            deadline: deadline
+        })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.code === 0) {
+                closeModals();
+                loadTasks();
+                showToast('Task updated successfully');
+                openTaskDetailModal(taskId);
+            } else {
+                showToast('Failed to update task: ' + data.msg);
             }
         });
 }

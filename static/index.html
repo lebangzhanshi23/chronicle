@@ -257,6 +257,69 @@
         </div>
     </div>
 
+    <!-- Edit Task Modal -->
+    <div id="edit-task-modal" class="fixed inset-0 z-50 hidden">
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModals()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-2xl bg-dark-card border border-dark-border text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="px-6 py-5 border-b border-dark-border flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-white">Edit Task</h3>
+                        <button onclick="closeModals()" class="text-slate-400 hover:text-white transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <form id="edit-task-form" onsubmit="handleEditTask(event)" class="px-6 py-5 space-y-4">
+                        <input type="hidden" id="edit-task-id">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Title</label>
+                            <input type="text" id="edit-task-title" required
+                                class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500"
+                                placeholder="e.g. Develop login API">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Category</label>
+                            <input type="text" id="edit-task-category" required
+                                class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500"
+                                placeholder="e.g. Backend">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Deadline <span
+                                    class="text-slate-500 text-xs font-normal">(Optional)</span></label>
+                            <input type="datetime-local" id="edit-task-deadline"
+                                class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Description <span
+                                    class="text-slate-500 text-xs font-normal">(Optional)</span></label>
+                            <textarea id="edit-task-desc" rows="3"
+                                class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 resize-none"
+                                placeholder="Provide additional background context..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Targets <span
+                                    class="text-slate-500 text-xs font-normal">(Optional)</span></label>
+                            <textarea id="edit-task-targets" rows="2"
+                                class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 resize-none"
+                                placeholder="Acceptance criteria..."></textarea>
+                        </div>
+                        <div class="mt-6 flex justify-end gap-3">
+                            <button type="button" onclick="closeModals()"
+                                class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">Cancel</button>
+                            <button type="submit"
+                                class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium transition-all shadow-lg shadow-indigo-500/20">Save
+                                Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Task Detail Modal -->
     <div id="task-detail-modal" class="fixed inset-0 z-50 hidden">
         <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModals()"></div>
@@ -269,6 +332,8 @@
                         <h3 class="text-lg font-semibold text-white truncate pr-4" id="detail-task-title">Task Details
                         </h3>
                         <div class="flex gap-3">
+                            <button id="btn-edit-task"
+                                class="text-xs bg-slate-500/10 hover:bg-slate-500 text-slate-400 hover:text-white border border-slate-500/20 px-3 py-1.5 rounded-lg transition-colors hidden">Edit</button>
                             <button id="btn-delete-task"
                                 class="text-xs bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 px-3 py-1.5 rounded-lg transition-colors hidden">Delete</button>
                             <button id="btn-update-progress"
@@ -433,7 +498,7 @@
         </div>
     </div>
 
-    <script src="/app.js"></script>
+    <script src="/app.js?v=1.1"></script>
 </body>
 
 </html>
