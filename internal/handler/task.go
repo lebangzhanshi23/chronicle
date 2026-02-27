@@ -17,6 +17,7 @@ func RegisterRoutes(r *gin.Engine) {
 		v1.GET("/tasks/:id", GetTask)
 		v1.DELETE("/tasks/:id", DeleteTask)
 		v1.POST("/tasks/:id/progress", UpdateProgress)
+		v1.DELETE("/worklogs/:id", DeleteWorklog)
 		v1.GET("/reports/daily-summary", GetDailySummary)
 		v1.GET("/exports/daily-markdown", GetDailyMarkdown)
 	}
@@ -74,6 +75,21 @@ func DeleteTask(c *gin.Context) {
 
 	if err := service.DeleteTask(id); err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResp(500, "failed to delete task: "+err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, model.SuccessResp(nil))
+}
+
+func DeleteWorklog(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, model.ErrorResp(400, "missing worklog id"))
+		return
+	}
+
+	if err := service.DeleteWorklog(id); err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResp(500, "failed to delete worklog: "+err.Error()))
 		return
 	}
 

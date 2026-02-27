@@ -74,6 +74,10 @@ func DeleteTask(id string) error {
 	})
 }
 
+func DeleteWorklog(id string) error {
+	return DB.Where("id = ?", id).Delete(&model.TaskLog{}).Error
+}
+
 func GetTask(id string) (*model.Task, error) {
 	var task model.Task
 	if err := DB.Preload("Logs", func(db *gorm.DB) *gorm.DB {

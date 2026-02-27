@@ -182,9 +182,18 @@ function openTaskDetailModal(taskId) {
                 if (task.logs && task.logs.length > 0) {
                     task.logs.forEach(log => {
                         const logDiv = document.createElement('div');
-                        logDiv.className = 'bg-dark-bg p-3 rounded-lg border border-dark-border text-sm';
+                        logDiv.className = 'bg-dark-bg p-3 rounded-lg border border-dark-border text-sm group relative';
                         const timeStr = new Date(log.created_at).toLocaleString();
-                        logDiv.innerHTML = `<div class="text-xs text-slate-500 mb-1">${timeStr}</div><div class="text-slate-200 whitespace-pre-wrap">${escapeHtml(log.log_text)}</div>`;
+
+                        logDiv.innerHTML = `
+                            <div class="flex justify-between items-start mb-1">
+                                <div class="text-xs text-slate-500">${timeStr}</div>
+                                <button onclick="confirmDeleteWorklog('${log.id}', '${task.id}')" title="Delete Worklog" class="text-xs text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                            <div class="text-slate-200 whitespace-pre-wrap pr-6">${escapeHtml(log.log_text)}</div>
+                        `;
                         logsContainer.appendChild(logDiv);
                     });
                 } else {
@@ -310,6 +319,21 @@ function confirmDeleteTask(taskId) {
                     showToast('Task deleted successfully');
                 } else {
                     showToast('Failed to delete task: ' + data.msg);
+                }
+            });
+    }
+}
+
+function confirmDeleteWorklog(logId, taskId) {
+    if (confirm("Are you sure you want to delete this worklog?")) {
+        fetch(`/api/v1/worklogs/${logId}`, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.code === 0) {
+                    showToast('Worklog deleted successfully');
+                    openTaskDetailModal(taskId);
+                } else {
+                    showToast('Failed to delete worklog: ' + data.msg);
                 }
             });
     }
