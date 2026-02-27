@@ -41,6 +41,7 @@ type CreateTaskReq struct {
 	Category    string     `json:"category" binding:"required"`
 	Description string     `json:"description"`
 	Targets     string     `json:"targets"`
+	Links       string     `json:"links"`
 	Deadline    *time.Time `json:"deadline"`
 }
 
