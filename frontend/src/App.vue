@@ -8,6 +8,7 @@ import ProgressModal from './components/ProgressModal.vue'
 import StatsModal from './components/StatsModal.vue'
 import StatsBar from './components/StatsBar.vue'
 import DailySummaryModal from './components/DailySummaryModal.vue'
+import ConfirmModal from './components/ConfirmModal.vue'
 
 // -- GLOBAL STATE --
 const tasks = ref([])
@@ -19,6 +20,17 @@ const isDetailModalOpen = ref(false)
 const isProgressModalOpen = ref(false)
 const isStatsModalOpen = ref(false)
 const isSummaryModalOpen = ref(false)
+
+// Confirm modal state
+const isConfirmModalOpen = ref(false)
+const confirmModalConfig = ref({
+  title: 'Confirm Delete',
+  message: 'Are you sure you want to delete this task? This action cannot be undone.',
+  confirmText: 'Delete',
+  cancelText: 'Cancel',
+  confirmDanger: true,
+  onConfirm: () => {}
+})
 
 const isEditMode = ref(false)
 
@@ -74,10 +86,20 @@ function handleOpenEdit() {
 }
 
 async function handleDeleteTask() {
-  if (!confirm("Delete this task?")) return
-  await fetch(`/api/v1/tasks/${activeTask.value.id}`, { method: 'DELETE' })
   isDetailModalOpen.value = false
-  loadTasks()
+  confirmModalConfig.value = {
+    title: 'Delete Task',
+    message: `Are you sure you want to delete "${activeTask.value.title}"? This action cannot be undone.`,
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    confirmDanger: true,
+    onConfirm: async () => {
+      await fetch(`/api/v1/tasks/${activeTask.value.id}`, { method: 'DELETE' })
+      isConfirmModalOpen.value = false
+      loadTasks()
+    }
+  }
+  isConfirmModalOpen.value = true
 }
 
 function handleOpenProgress() {
@@ -163,5 +185,16 @@ async function handleDeleteWorklog() {
   <DailySummaryModal
     v-if="isSummaryModalOpen"
     @close="isSummaryModalOpen = false"
+  />
+
+  <ConfirmModal
+    :is-open="isConfirmModalOpen"
+    :title="confirmModalConfig.title"
+    :message="confirmModalConfig.message"
+    :confirm-text="confirmModalConfig.confirmText"
+    :cancel-text="confirmModalConfig.cancelText"
+    :confirm-danger="confirmModalConfig.confirmDanger"
+    @confirm="confirmModalConfig.onConfirm"
+    @cancel="isConfirmModalOpen = false"
   />
 </template>
