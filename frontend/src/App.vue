@@ -112,8 +112,22 @@ async function handleProgressSubmit() {
   loadTasks()
 }
 
-async function handleDeleteWorklog() {
-  await loadTaskDetail(activeTask.value.id)
+async function handleDeleteWorklog(worklogId) {
+  if (!worklogId) return
+  isDetailModalOpen.value = false
+  confirmModalConfig.value = {
+    title: 'Delete Worklog',
+    message: 'Are you sure you want to delete this worklog? This action cannot be undone.',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    confirmDanger: true,
+    onConfirm: async () => {
+      await fetch(`/api/v1/worklogs/${worklogId}`, { method: 'DELETE' })
+      isConfirmModalOpen.value = false
+      await loadTaskDetail(activeTask.value.id)
+    }
+  }
+  isConfirmModalOpen.value = true
 }
 </script>
 
