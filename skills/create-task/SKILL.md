@@ -8,6 +8,18 @@
 chronicle create <title> [flags]
 ```
 
+## Formatter 输出格式
+
+创建成功后输出：
+```
+✅ 任务已创建
+- 标题: {title}
+- 分类: {category}
+- 截止: {deadline 或 "无"}
+- 状态: {status}
+- ID: {id}
+```
+
 ## 参数
 
 | 参数 | 简写 | 说明 |
