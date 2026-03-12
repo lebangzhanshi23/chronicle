@@ -1,3 +1,8 @@
+---
+name: update-task
+description: 更新 Chronicle 任务：添加工作记录、标记完成。
+---
+
 # update-task
 
 更新 Chronicle 任务：添加工作记录、标记完成。

@@ -1,3 +1,8 @@
+---
+name: log-daily-work
+description: 获取今日工作记录，写入 Obsidian Daily Log。
+---
+
 # log-daily-work
 
 获取今日工作记录，写入 Obsidian Daily Log。

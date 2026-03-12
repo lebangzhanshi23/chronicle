@@ -1,3 +1,8 @@
+---
+name: create-task
+description: 在 Chronicle 任务管理系统中创建新任务。
+---
+
 # create-task
 
 在 Chronicle 任务管理系统中创建新任务。

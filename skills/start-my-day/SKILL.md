@@ -1,3 +1,8 @@
+---
+name: start-my-day
+description: 生成每日工作计划，汇总 Chronicle 任务管理系统的待办事项和 DDL 提醒。
+---
+
 # start-my-day
 
 生成每日工作计划，汇总 Chronicle 任务管理系统的待办事项和 DDL 提醒。
