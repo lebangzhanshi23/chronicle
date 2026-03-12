@@ -113,16 +113,19 @@ go build -o bin/chronicle main.go
 
 ### 📚 AI Agent 集成
 
-如果你是 AI Agent 想接入 Chronicle，推荐使用 `skills/tasks.md` 中的 Python 示例代码，支持创建任务、查询进度、记录日志等操作。
+如果你是 AI Agent 想接入 Chronicle，推荐使用 `skills/` 目录下的 Skill 示例代码。
 
 **快速集成示例：**
 
-```python
-import urllib.request, json
+```powershell
+# 列出任务
+chronicle list --json
 
-# 查询进行中的任务
-req = urllib.request.Request('http://localhost:8080/api/v1/tasks?status=todo,in-progress')
-print(urllib.request.urlopen(req).read().decode('utf-8'))
+# 创建任务
+chronicle create "任务标题" -c "分类"
+
+# 添加记录
+chronicle log <id> "工作内容"
 ```
 
-详细文档见：[skills/tasks.md](./skills/tasks.md)
+详细文档见：[skills/](./skills/) 目录
