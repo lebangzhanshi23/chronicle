@@ -76,7 +76,7 @@ print(urllib.request.urlopen(req).read().decode('utf-8'))
 
 ## 分类建议
 
-- BCS
+- 工作
 - 许可管理
 - DevOps
 - 学习
