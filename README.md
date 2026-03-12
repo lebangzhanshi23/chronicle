@@ -89,3 +89,19 @@ go build -o bin/server cmd/server/main.go
 3. **追加执行日志并标记进度**: `POST /api/v1/tasks/:id/progress` (复合更新，保证原子性)
 4. **获取每日 JSON 总结**: `GET /api/v1/reports/daily-summary?date=YY-MM-DD`
 5. **获取 Markdown 导出**: `GET /api/v1/exports/daily-markdown?date=YY-MM-DD`
+
+### 📚 AI Agent 集成
+
+如果你是 AI Agent 想接入 Chronicle，推荐使用 `skills/tasks.md` 中的 Python 示例代码，支持创建任务、查询进度、记录日志等操作。
+
+**快速集成示例：**
+
+```python
+import urllib.request, json
+
+# 查询进行中的任务
+req = urllib.request.Request('http://localhost:8080/api/v1/tasks?status=todo,in-progress')
+print(urllib.request.urlopen(req).read().decode('utf-8'))
+```
+
+详细文档见：[skills/tasks.md](./skills/tasks.md)
