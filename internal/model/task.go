@@ -64,10 +64,11 @@ type UpdateTaskReq struct {
 }
 
 type ActiveTaskResp struct {
-	ID       string `json:"id"`
-	Title    string `json:"title"`
-	Category string `json:"category"`
-	Status   string `json:"status"`
+	ID       string     `json:"id"`
+	Title    string     `json:"title"`
+	Category string     `json:"category"`
+	Status   string     `json:"status"`
+	Deadline *time.Time `json:"deadline,omitempty"`
 }
 
 type DailySummaryActivity struct {

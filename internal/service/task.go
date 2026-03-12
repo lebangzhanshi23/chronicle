@@ -37,9 +37,9 @@ func CreateTask(req model.CreateTaskReq) (*model.Task, error) {
 
 func GetActiveTasks() ([]model.ActiveTaskResp, error) {
 	var tasks []model.ActiveTaskResp
-	err := DB.Model(&model.Task{}).Select("id", "title", "category", "status").
+	err := DB.Model(&model.Task{}).Select("id", "title", "category", "status", "deadline").
 		Where("status IN ?", []string{model.TaskStatusTodo, model.TaskStatusInProgress}).
-		Order("created_at desc").
+		Order("CASE WHEN deadline IS NULL THEN 1 ELSE 0 END, deadline ASC, created_at desc").
 		Find(&tasks).Error
 	if err != nil {
 		return nil, err
