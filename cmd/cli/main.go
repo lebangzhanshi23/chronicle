@@ -157,7 +157,9 @@ func handleCreate(args []string) {
 
 func handleList(args []string) {
 	fs := flag.NewFlagSet("list", flag.ExitOnError)
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return
+	}
 
 	var tasks []model.ActiveTaskResp
 	var err error
@@ -192,7 +194,9 @@ func handleList(args []string) {
 
 func handleGet(args []string) {
 	fs := flag.NewFlagSet("get", flag.ExitOnError)
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return
+	}
 
 	if fs.NArg() < 1 {
 		fmt.Println("Error: task ID is required")
@@ -230,7 +234,9 @@ func handleUpdate(args []string) {
 	fs.StringVar(&targets, "target", "", "Targets")
 	fs.StringVar(&deadline, "deadline", "", "Deadline")
 	fs.StringVar(&newStatus, "new-status", "", "New status")
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return
+	}
 
 	if fs.NArg() < 1 {
 		fmt.Println("Error: task ID is required")
@@ -274,7 +280,9 @@ func handleUpdate(args []string) {
 
 func handleDelete(args []string) {
 	fs := flag.NewFlagSet("delete", flag.ExitOnError)
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return
+	}
 
 	if fs.NArg() < 1 {
 		fmt.Println("Error: task ID is required")
@@ -294,7 +302,9 @@ func handleDelete(args []string) {
 
 func handleLog(args []string) {
 	fs := flag.NewFlagSet("log", flag.ExitOnError)
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return
+	}
 
 	if fs.NArg() < 2 {
 		fmt.Println("Error: task ID and log message are required")
@@ -320,7 +330,9 @@ func handleLog(args []string) {
 
 func handleSummary(args []string) {
 	fs := flag.NewFlagSet("summary", flag.ExitOnError)
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return
+	}
 
 	dateStr := ""
 	if fs.NArg() > 0 {
@@ -361,7 +373,9 @@ func handleSummary(args []string) {
 
 func handleStats(args []string) {
 	fs := flag.NewFlagSet("stats", flag.ExitOnError)
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return
+	}
 
 	stats, err := service.GetStatsSummary()
 	if err != nil {

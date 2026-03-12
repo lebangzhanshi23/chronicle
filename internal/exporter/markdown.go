@@ -120,7 +120,9 @@ func GenerateDailyMarkdown(dateStr string) ([]byte, error) {
 		if err != nil {
 			continue
 		}
-		fWriter.Write(taskBuf.Bytes())
+		if _, err := fWriter.Write(taskBuf.Bytes()); err != nil {
+			continue
+		}
 	}
 
 	if err := zipWriter.Close(); err != nil {
