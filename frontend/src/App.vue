@@ -188,7 +188,7 @@ async function handleDeleteWorklog(worklogId) {
     :is-open="isProgressModalOpen"
     :task="activeTask"
     @close="isProgressModalOpen = false"
-    @submit="handleProgressSubmit"
+    @refresh="loadTasks"
   />
 
   <StatsModal
