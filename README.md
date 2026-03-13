@@ -59,7 +59,7 @@ Chronicle 这是一个专为 LLM Agent 打造的**任务管理与追踪系统 (A
 #### 方式一：go install（推荐）
 
 ```bash
-go install github.com/yuyudeqiu/chronicle/cmd/chronicle@latest
+go install github.com/yuyudeqiu/chronicle@latest
 ```
 
 #### 方式二：手动编译

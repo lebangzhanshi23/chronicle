@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/yuyudeqiu/chronicle/internal/model"
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
 
