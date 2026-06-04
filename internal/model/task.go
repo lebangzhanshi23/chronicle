@@ -84,6 +84,28 @@ type DailySummaryResp struct {
 	Activities []DailySummaryActivity `json:"activities"`
 }
 
+type WeeklySummaryActivity struct {
+	TaskID    string   `json:"task_id"`
+	TaskTitle string   `json:"task_title"`
+	Category  string   `json:"category"`
+	Status    string   `json:"status"`
+	WeekLogs  []string `json:"week_logs"`
+}
+
+type WeeklyStats struct {
+	TotalTasks      int `json:"total_tasks"`
+	CompletedTasks  int `json:"completed_tasks"`
+	InProgressTasks int `json:"in_progress_tasks"`
+	TodoTasks       int `json:"todo_tasks"`
+}
+
+type WeeklySummaryResp struct {
+	WeekStart  string                 `json:"week_start"`
+	WeekEnd    string                 `json:"week_end"`
+	Activities []WeeklySummaryActivity `json:"activities"`
+	Stats      WeeklyStats            `json:"stats"`
+}
+
 type StatsSummaryResp struct {
 	TotalTasks      int            `json:"total_tasks"`
 	CompletedTasks  int            `json:"completed_tasks"`
