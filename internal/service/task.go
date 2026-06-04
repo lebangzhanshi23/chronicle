@@ -284,6 +284,99 @@ func GetDailySummary(dateStr string) (*model.DailySummaryResp, error) {
 	return resp, nil
 }
 
+// GetWeeklySummary returns the weekly summary for a given date string (YYYY-MM-DD).
+// If date is empty, uses today. Returns the week (Mon-Sun) containing that date.
+func GetWeeklySummary(dateStr string) (*model.WeeklySummaryResp, error) {
+	var targetDate time.Time
+	var err error
+	if dateStr == "" {
+		targetDate = time.Now()
+	} else {
+		targetDate, err = time.Parse("2006-01-02", dateStr)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Calculate week start (Monday) and week end (Sunday)
+	weekday := targetDate.Weekday()
+	if weekday == time.Sunday {
+		weekday = 7
+	}
+	weekStart := targetDate.AddDate(0, 0, -int(weekday-time.Monday))
+	weekEnd := weekStart.AddDate(0, 0, 6)
+
+	startOfWeek := time.Date(weekStart.Year(), weekStart.Month(), weekStart.Day(), 0, 0, 0, 0, targetDate.Location())
+	endOfWeek := time.Date(weekEnd.Year(), weekEnd.Month(), weekEnd.Day(), 23, 59, 59, 0, targetDate.Location())
+
+	// Find all logs in this week
+	var logs []model.TaskLog
+	if err := DB.Where("created_at >= ? AND created_at <= ?", startOfWeek, endOfWeek).
+		Order("created_at asc").
+		Find(&logs).Error; err != nil {
+		return nil, err
+	}
+
+	taskLogMap := make(map[string][]string)
+	var taskIDs []string
+	for _, l := range logs {
+		timeStr := l.CreatedAt.Format("01-02 15:04")
+		logLine := timeStr + " - " + l.LogText
+		if len(taskLogMap[l.TaskID]) == 0 {
+			taskIDs = append(taskIDs, l.TaskID)
+		}
+		taskLogMap[l.TaskID] = append(taskLogMap[l.TaskID], logLine)
+	}
+
+	var activities []model.WeeklySummaryActivity
+	if len(taskIDs) > 0 {
+		var tasks []model.Task
+		if err := DB.Where("id IN ?", taskIDs).Find(&tasks).Error; err != nil {
+			return nil, err
+		}
+		taskMap := make(map[string]model.Task)
+		for _, t := range tasks {
+			taskMap[t.ID] = t
+		}
+
+		for _, tid := range taskIDs {
+			t := taskMap[tid]
+			activities = append(activities, model.WeeklySummaryActivity{
+				TaskID:    t.ID,
+				TaskTitle: t.Title,
+				Category:  t.Category,
+				Status:    t.Status,
+				WeekLogs:  taskLogMap[tid],
+			})
+		}
+	}
+
+	if activities == nil {
+		activities = []model.WeeklySummaryActivity{}
+	}
+
+	// Calculate stats for this week
+	var totalTasks, completedTasks, inProgressTasks, todoTasks int64
+	DB.Model(&model.Task{}).Where("id IN ?", taskIDs).Count(&totalTasks)
+	DB.Model(&model.Task{}).Where("id IN ? AND status = ?", taskIDs, model.TaskStatusDone).Count(&completedTasks)
+	DB.Model(&model.Task{}).Where("id IN ? AND status = ?", taskIDs, model.TaskStatusInProgress).Count(&inProgressTasks)
+	DB.Model(&model.Task{}).Where("id IN ? AND status = ?", taskIDs, model.TaskStatusTodo).Count(&todoTasks)
+
+	resp := &model.WeeklySummaryResp{
+		WeekStart:  startOfWeek.Format("2006-01-02"),
+		WeekEnd:    endOfWeek.Format("2006-01-02"),
+		Activities: activities,
+		Stats: model.WeeklyStats{
+			TotalTasks:      int(totalTasks),
+			CompletedTasks:  int(completedTasks),
+			InProgressTasks: int(inProgressTasks),
+			TodoTasks:       int(todoTasks),
+		},
+	}
+
+	return resp, nil
+}
+
 func GetStatsSummary() (*model.StatsSummaryResp, error) {
 	var totalTasks int64
 	var completedTasks int64

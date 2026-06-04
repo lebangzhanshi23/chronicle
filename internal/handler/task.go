@@ -31,6 +31,7 @@ func RegisterRoutes(r *gin.Engine) {
 		v1.POST("/tasks/:id/unarchive", UnarchiveTask)
 		v1.DELETE("/worklogs/:id", DeleteWorklog)
 		v1.GET("/reports/daily-summary", GetDailySummary)
+		v1.GET("/reports/weekly-summary", GetWeeklySummary)
 		v1.GET("/exports/daily-markdown", GetDailyMarkdown)
 		v1.GET("/stats/summary", GetStatsSummary)
 	}
@@ -181,6 +182,17 @@ func GetDailySummary(c *gin.Context) {
 	summary, err := service.GetDailySummary(dateStr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResp(500, "failed to get summary: "+err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, model.SuccessResp(summary))
+}
+
+func GetWeeklySummary(c *gin.Context) {
+	dateStr := c.Query("date") // Format: YYYY-MM-DD
+	summary, err := service.GetWeeklySummary(dateStr)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResp(500, "failed to get weekly summary: "+err.Error()))
 		return
 	}
 

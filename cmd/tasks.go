@@ -266,6 +266,57 @@ var summaryCmd = &cobra.Command{
 	},
 }
 
+var weeklySummaryCmd = &cobra.Command{
+	Use:   "weekly-summary [date]",
+	Short: "Get weekly summary (default: current week, date picks the containing week)",
+	Run: func(cmd *cobra.Command, args []string) {
+		dateStr := ""
+		if len(args) > 0 {
+			dateStr = args[0]
+		}
+
+		summary, err := service.GetWeeklySummary(dateStr)
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+			os.Exit(1)
+		}
+
+		if jsonOutput {
+			printJSON(summary)
+		} else {
+			fmt.Printf("Weekly Summary: %s ~ %s\n\n", summary.WeekStart, summary.WeekEnd)
+
+			if len(summary.Activities) == 0 {
+				fmt.Println("No activities this week")
+				return
+			}
+
+			// Group by category
+			categoryMap := make(map[string][]model.WeeklySummaryActivity)
+			for _, a := range summary.Activities {
+				categoryMap[a.Category] = append(categoryMap[a.Category], a)
+			}
+
+			for cat, activities := range categoryMap {
+				fmt.Printf("### %s\n", cat)
+				for _, a := range activities {
+					statusIcon := map[string]string{"todo": "📝", "in-progress": "🔄", "done": "✅"}[a.Status]
+					fmt.Printf("%s %s\n", statusIcon, a.TaskTitle)
+					for _, log := range a.WeekLogs {
+						fmt.Printf("   - %s\n", log)
+					}
+				}
+				fmt.Println()
+			}
+
+			fmt.Printf("=== Stats ===\n")
+			fmt.Printf("  Total: %d | ✅ Done: %d | 🔄 In Progress: %d | 📝 Todo: %d\n",
+				summary.Stats.TotalTasks, summary.Stats.CompletedTasks,
+				summary.Stats.InProgressTasks, summary.Stats.TodoTasks)
+		}
+	},
+}
+
 var statsCmd = &cobra.Command{
 	Use:   "stats",
 	Short: "Get task statistics",
@@ -334,7 +385,7 @@ func printTask(task *model.Task) {
 
 func init() {
 	// Add subcommands to rootCmd
-	rootCmd.AddCommand(createCmd, listCmd, getCmd, updateCmd, deleteCmd, logCmd, summaryCmd, statsCmd)
+	rootCmd.AddCommand(createCmd, listCmd, getCmd, updateCmd, deleteCmd, logCmd, summaryCmd, weeklySummaryCmd, statsCmd)
 
 	// Local flags for create and update
 	createCmd.Flags().StringVarP(&category, "category", "c", "", "Task category")
