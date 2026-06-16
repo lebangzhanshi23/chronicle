@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+    --color-dark-bg: #09090b;
+    /* Deeper, richer background */
+    --color-dark-card: #18181b;
+    --color-dark-border: #27272a;
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Custom scrollbar and animations */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #52525b;
+}
+
+.glass-card {
+    background: linear-gradient(180deg, rgba(28, 28, 32, 1) 0%, rgba(18, 18, 20, 1) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* very subtle border */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.task-enter {
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: opacity, transform;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
