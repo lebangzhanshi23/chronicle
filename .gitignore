@@ -1,0 +1,15 @@
+# Binaries
+bin/
+*.exe
+
+# Data
+data/
+data_backup_*/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

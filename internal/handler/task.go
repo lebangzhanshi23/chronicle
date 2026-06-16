@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yuyudeqiu/chronicle/internal/exporter"
 	"github.com/yuyudeqiu/chronicle/internal/model"
 	"github.com/yuyudeqiu/chronicle/internal/service"
 )
@@ -31,7 +30,6 @@ func RegisterRoutes(r *gin.Engine) {
 		v1.POST("/tasks/:id/unarchive", UnarchiveTask)
 		v1.DELETE("/worklogs/:id", DeleteWorklog)
 		v1.GET("/reports/daily-summary", GetDailySummary)
-		v1.GET("/exports/daily-markdown", GetDailyMarkdown)
 		v1.GET("/stats/summary", GetStatsSummary)
 	}
 }
@@ -185,18 +183,6 @@ func GetDailySummary(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, model.SuccessResp(summary))
-}
-
-func GetDailyMarkdown(c *gin.Context) {
-	dateStr := c.Query("date") // Format: YYYY-MM-DD
-	zipBytes, err := exporter.GenerateDailyMarkdown(dateStr)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResp(500, "failed to generate markdown: "+err.Error()))
-		return
-	}
-
-	c.Header("Content-Disposition", "attachment; filename=obsidian_tasks.zip")
-	c.Data(http.StatusOK, "application/zip", zipBytes)
 }
 
 func GetStatsSummary(c *gin.Context) {
