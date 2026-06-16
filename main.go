@@ -1,24 +1,17 @@
 package main
 
 import (
-	"log"
-
 	"github.com/yuyudeqiu/chronicle/cmd"
 )
 
-// Build variables injected via ldflags
+// Build variables injected via ldflags (make build) or runtime/debug.ReadBuildInfo (go install)
 var (
 	gitCommit string
 	gitDate   string
 	buildTime string
 )
 
-func init() {
-	if gitCommit != "" {
-		log.Printf("Build: commit=%s date=%s time=%s", gitCommit, gitDate, buildTime)
-	}
-}
-
 func main() {
+	cmd.SetBuildInfo(gitCommit, gitDate, buildTime)
 	cmd.Execute()
 }
