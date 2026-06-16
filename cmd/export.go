@@ -98,7 +98,10 @@ Use --force to skip confirmation.`,
 			fmt.Printf("   Are you sure? (yes/no): ")
 
 			var response string
-			fmt.Scanln(&response)
+			if _, err := fmt.Scanln(&response); err != nil {
+				fmt.Printf("   Failed to read input: %v\n", err)
+				return
+			}
 			if response != "yes" {
 				fmt.Println("Import cancelled.")
 				return
@@ -112,9 +115,10 @@ Use --force to skip confirmation.`,
 			defer srcFile.Close()
 			bakFile, err := os.Create(backupPath)
 			if err == nil {
-				io.Copy(bakFile, srcFile)
+				if _, copyErr := io.Copy(bakFile, srcFile); copyErr == nil {
+					fmt.Printf("   Auto-backup saved to: %s\n", backupPath)
+				}
 				bakFile.Close()
-				fmt.Printf("   Auto-backup saved to: %s\n", backupPath)
 			}
 		}
 
