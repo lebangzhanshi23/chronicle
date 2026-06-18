@@ -254,7 +254,7 @@ var summaryCmd = &cobra.Command{
 			for cat, activities := range categoryMap {
 				fmt.Printf("### %s\n", cat)
 				for _, a := range activities {
-					statusIcon := map[string]string{"todo": "📝", "in-progress": "🔄", "done": "✅"}[a.Status]
+					statusIcon := map[string]string{"todo": "📝", "in-progress": "🔄", "blocked": "🚫", "done": "✅"}[a.Status]
 					fmt.Printf("%s %s\n", statusIcon, a.TaskTitle)
 					for _, log := range a.TodayLogs {
 						fmt.Printf("   - %s\n", log)
@@ -300,7 +300,7 @@ var weeklySummaryCmd = &cobra.Command{
 			for cat, activities := range categoryMap {
 				fmt.Printf("### %s\n", cat)
 				for _, a := range activities {
-					statusIcon := map[string]string{"todo": "📝", "in-progress": "🔄", "done": "✅"}[a.Status]
+					statusIcon := map[string]string{"todo": "📝", "in-progress": "🔄", "blocked": "🚫", "done": "✅"}[a.Status]
 					fmt.Printf("%s %s\n", statusIcon, a.TaskTitle)
 					for _, log := range a.WeekLogs {
 						fmt.Printf("   - %s\n", log)
@@ -310,9 +310,9 @@ var weeklySummaryCmd = &cobra.Command{
 			}
 
 			fmt.Printf("=== Stats ===\n")
-			fmt.Printf("  Total: %d | ✅ Done: %d | 🔄 In Progress: %d | 📝 Todo: %d\n",
+			fmt.Printf("  Total: %d | ✅ Done: %d | 🔄 In Progress: %d | 📝 Todo: %d | 🚫 Blocked: %d\n",
 				summary.Stats.TotalTasks, summary.Stats.CompletedTasks,
-				summary.Stats.InProgressTasks, summary.Stats.TodoTasks)
+				summary.Stats.InProgressTasks, summary.Stats.TodoTasks, summary.Stats.BlockedTasks)
 		}
 	},
 }
@@ -334,6 +334,7 @@ var statsCmd = &cobra.Command{
 			fmt.Printf("Total Tasks: %d\n", stats.TotalTasks)
 			fmt.Printf("Completed: %d\n", stats.CompletedTasks)
 			fmt.Printf("In Progress: %d\n", stats.InProgressTasks)
+			fmt.Printf("Blocked: %d\n", stats.BlockedTasks)
 			fmt.Printf("Todo: %d\n", stats.TodoTasks)
 			fmt.Printf("Completion Rate: %.1f%%\n", stats.CompletionRate*100)
 
