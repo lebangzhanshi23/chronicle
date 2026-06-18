@@ -7,6 +7,7 @@ import (
 const (
 	TaskStatusTodo       = "todo"
 	TaskStatusInProgress = "in-progress"
+	TaskStatusBlocked    = "blocked"
 	TaskStatusDone       = "done"
 )
 
@@ -97,6 +98,7 @@ type WeeklyStats struct {
 	CompletedTasks  int `json:"completed_tasks"`
 	InProgressTasks int `json:"in_progress_tasks"`
 	TodoTasks       int `json:"todo_tasks"`
+	BlockedTasks    int `json:"blocked_tasks"`
 }
 
 type WeeklySummaryResp struct {
@@ -111,6 +113,7 @@ type StatsSummaryResp struct {
 	CompletedTasks  int            `json:"completed_tasks"`
 	TodoTasks       int            `json:"todo_tasks"`
 	InProgressTasks int            `json:"in_progress_tasks"`
+	BlockedTasks    int            `json:"blocked_tasks"`
 	ByCategory      map[string]int `json:"by_category"`
 	CompletionRate  float64        `json:"completion_rate"`
 	WeeklyStats     []DailyStats   `json:"weekly_stats"`

@@ -38,7 +38,7 @@ func CreateTask(req model.CreateTaskReq) (*model.Task, error) {
 func GetActiveTasks() ([]model.ActiveTaskResp, error) {
 	var tasks []model.ActiveTaskResp
 	err := DB.Model(&model.Task{}).Select("id", "title", "category", "status", "deadline").
-		Where("status IN ?", []string{model.TaskStatusTodo, model.TaskStatusInProgress}).
+		Where("status IN ?", []string{model.TaskStatusTodo, model.TaskStatusInProgress, model.TaskStatusBlocked}).
 		Order("CASE WHEN deadline IS NULL THEN 1 ELSE 0 END, deadline ASC, created_at desc").
 		Find(&tasks).Error
 	if err != nil {
@@ -356,11 +356,12 @@ func GetWeeklySummary(dateStr string) (*model.WeeklySummaryResp, error) {
 	}
 
 	// Calculate stats for this week
-	var totalTasks, completedTasks, inProgressTasks, todoTasks int64
+	var totalTasks, completedTasks, inProgressTasks, todoTasks, blockedTasks int64
 	DB.Model(&model.Task{}).Where("id IN ?", taskIDs).Count(&totalTasks)
 	DB.Model(&model.Task{}).Where("id IN ? AND status = ?", taskIDs, model.TaskStatusDone).Count(&completedTasks)
 	DB.Model(&model.Task{}).Where("id IN ? AND status = ?", taskIDs, model.TaskStatusInProgress).Count(&inProgressTasks)
 	DB.Model(&model.Task{}).Where("id IN ? AND status = ?", taskIDs, model.TaskStatusTodo).Count(&todoTasks)
+	DB.Model(&model.Task{}).Where("id IN ? AND status = ?", taskIDs, model.TaskStatusBlocked).Count(&blockedTasks)
 
 	resp := &model.WeeklySummaryResp{
 		WeekStart:  startOfWeek.Format("2006-01-02"),
@@ -371,6 +372,7 @@ func GetWeeklySummary(dateStr string) (*model.WeeklySummaryResp, error) {
 			CompletedTasks:  int(completedTasks),
 			InProgressTasks: int(inProgressTasks),
 			TodoTasks:       int(todoTasks),
+			BlockedTasks:    int(blockedTasks),
 		},
 	}
 
@@ -382,12 +384,14 @@ func GetStatsSummary() (*model.StatsSummaryResp, error) {
 	var completedTasks int64
 	var todoTasks int64
 	var inProgressTasks int64
+	var blockedTasks int64
 
 	// Total counts by status (excluding archived)
 	DB.Model(&model.Task{}).Where("archived_at IS NULL").Count(&totalTasks)
 	DB.Model(&model.Task{}).Where("status = ? AND archived_at IS NULL", model.TaskStatusDone).Count(&completedTasks)
 	DB.Model(&model.Task{}).Where("status = ? AND archived_at IS NULL", model.TaskStatusTodo).Count(&todoTasks)
 	DB.Model(&model.Task{}).Where("status = ? AND archived_at IS NULL", model.TaskStatusInProgress).Count(&inProgressTasks)
+	DB.Model(&model.Task{}).Where("status = ? AND archived_at IS NULL", model.TaskStatusBlocked).Count(&blockedTasks)
 
 	// By category
 	var categoryCounts []struct {
@@ -433,6 +437,7 @@ func GetStatsSummary() (*model.StatsSummaryResp, error) {
 		CompletedTasks:  int(completedTasks),
 		TodoTasks:       int(todoTasks),
 		InProgressTasks: int(inProgressTasks),
+		BlockedTasks:    int(blockedTasks),
 		ByCategory:      byCategory,
 		CompletionRate:  completionRate,
 		WeeklyStats:     weeklyStats,

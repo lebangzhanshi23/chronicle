@@ -61,7 +61,9 @@ func CreateTask(c *gin.Context) {
 
 func GetActiveTasks(c *gin.Context) {
 	status := c.Query("status")
-	if status == "" || status == "in-progress,todo" || status == "todo,in-progress" {
+	if status == "" || status == "in-progress,todo" || status == "todo,in-progress" ||
+		status == "in-progress,todo,blocked" || status == "todo,in-progress,blocked" ||
+		status == "blocked,todo,in-progress" {
 		tasks, err := service.GetActiveTasks()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, model.ErrorResp(500, "failed to get tasks: "+err.Error()))
