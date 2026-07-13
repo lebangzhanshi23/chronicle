@@ -167,15 +167,18 @@ func UpdateProgress(taskID string, req model.UpdateProgressReq) error {
 			return errors.New("task is already done")
 		}
 
-		logEntry := model.TaskLog{
-			ID:        uuid.New().String(),
-			TaskID:    taskID,
-			LogText:   req.LogText,
-			CreatedAt: time.Now(),
-		}
+		// Only create worklog entry when LogText is not empty
+		if req.LogText != "" {
+			logEntry := model.TaskLog{
+				ID:        uuid.New().String(),
+				TaskID:    taskID,
+				LogText:   req.LogText,
+				CreatedAt: time.Now(),
+			}
 
-		if err := tx.Create(&logEntry).Error; err != nil {
-			return err
+			if err := tx.Create(&logEntry).Error; err != nil {
+				return err
+			}
 		}
 
 		updates := map[string]interface{}{
